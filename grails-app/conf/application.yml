@@ -104,11 +104,11 @@ environments:
     test:
         dataSource:
             dbCreate: update
-            url: jdbc:mysql:// 192.168.16.15:3306/deploymentdb
+            url: jdbc:mysql:// 192.168.16.15:3306/deploymentdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
     production:
         dataSource:
             dbCreate: update
-            url: jdbc:mysql:// 192.168.16.15:3306/deploymentdb
+            url: jdbc:mysql:// 192.168.16.15:3306/deploymentdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
             properties:
                 jmxEnabled: true
                 initialSize: 5

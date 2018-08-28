@@ -15,7 +15,7 @@ buildscript {
     }
  }
 
-version "0.1"
+version "0.2"
 group "utilityapp"
 
 apply plugin:"eclipse"
@@ -25,6 +25,8 @@ apply plugin:"org.grails.grails-web"
 apply plugin:"asset-pipeline"
 apply plugin:"org.grails.grails-gsp"
 apply plugin:"com.bmuschko.docker-remote-api"
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 repositories {
     mavenLocal()
@@ -69,6 +71,8 @@ dependencies {
     // https://mvnrepository.com/artifact/com.bmuschko/gradle-docker-plugin
     compile group: 'com.bmuschko', name: 'gradle-docker-plugin', version: '3.2.4'
 
+    compile "org.springframework.boot:spring-boot-starter-web"
+
 }
 
 bootRun {
@@ -76,6 +80,12 @@ bootRun {
     addResources = true
     String springProfilesActive = 'spring.profiles.active'
     systemProperty springProfilesActive, System.getProperty(springProfilesActive)
+}
+
+springBoot {
+    // Enable the creation of a fully
+    // executable archive file.
+    executable = true
 }
 
 tasks.withType(Test) {
@@ -99,11 +109,15 @@ ext {
 
 //tag::prepareDocker[]
 task prepareDocker(type: Copy, dependsOn: assemble) { // <3>
+    println "war file name: ${war.archiveName}"
+    def appjar = "${libsDir}${File.separator}${war.archiveName}"
+    println appjar
+ //   assert file(appjar).exists()
     description = 'Copy files from src/main/docker and application jar to Docker temporal build directory'
     group = 'Docker'
 
     from 'src/main/docker'
-    from project.jar
+    from appjar
 
     into dockerBuildDir
 }
@@ -111,19 +125,22 @@ task prepareDocker(type: Copy, dependsOn: assemble) { // <3>
 
 //tag::createDockerfile[]
 task createDockerfile(type: Dockerfile, dependsOn: prepareDocker) { // <4>
+
+
+
     description = 'Create a Dockerfile file'
     group = 'Docker'
 
     destFile = project.file("${dockerBuildDir}/Dockerfile")
 
     from 'openjdk:8u171-jdk-alpine3.8'
-    maintainer 'John Doe "john.doe@example.com"'
+    maintainer 'Developer'
 
     exposePort 8080
 
     workingDir '/app'
 
-    copyFile jar.archiveName, 'application.jar'
+    copyFile war.archiveName, 'application.jar'
     copyFile 'app-entrypoint.sh', 'app-entrypoint.sh' // <5>
     runCommand 'chmod +x app-entrypoint.sh'
 
