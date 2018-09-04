@@ -25,6 +25,8 @@ endpoints:
     enabled: false
     jmx:
         enabled: true
+server:
+    port: 9090
 
 ---
 grails:
@@ -65,6 +67,9 @@ grails:
             maxsize: 1000
     controllers:
         defaultScope: singleton
+        upload:
+          maxFileSize: 26214400
+          maxRequestSize: 26214400
     converters:
         encoding: UTF-8
     views:
@@ -100,7 +105,7 @@ environments:
     development:
         dataSource:
             dbCreate: create-drop
-            url: jdbc:mysql:// 192.168.16.15:3306/deploymentdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+            url: jdbc:mysql:// 192.168.16.15:3306/deploymentdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&autoReconnect=true&failOverReadOnly=false&maxReconnects=10
     test:
         dataSource:
             dbCreate: update
@@ -108,7 +113,7 @@ environments:
     production:
         dataSource:
             dbCreate: update
-            url: jdbc:mysql:// 192.168.16.15:3306/deploymentdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+            url: jdbc:mysql:// 192.168.16.15:3306/deploymentdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&autoReconnect=true&failOverReadOnly=false&maxReconnects=10
             properties:
                 jmxEnabled: true
                 initialSize: 5

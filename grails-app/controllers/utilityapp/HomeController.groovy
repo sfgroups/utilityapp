@@ -13,4 +13,17 @@ class HomeController {
 
         redirect action: 'index'
     }
+
+    def upload() {
+        println request.dump()
+        def f = request.getFile('filename')
+        println f
+        if (f?.empty) {
+            flash.message = 'file cannot be empty'
+            render(view: 'uploadForm')
+            return
+        }
+        f.transferTo(new File('c:\\shared\\file_name.txt'))
+        response.sendError(200, 'Done')
+    }
 }
